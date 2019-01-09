@@ -41,7 +41,8 @@ class App extends React.Component {
     event.preventDefault();
   }
 
-  handleRemove = (index) => {
+  handleRemove = (event, index) => {
+    event.stopPropagation();
     const { todos } = this.state;
 
     this.setState({

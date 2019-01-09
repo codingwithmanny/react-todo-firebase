@@ -8,9 +8,9 @@ const List = ({ todos, handleCheckbox, handleRemove }) => (
       ? (<div className="todo list-group-item">No todos yet</div>)
       : (todos.map((item, key) => (
         <Todo
+          key={`list-${(key + 1)}`}
           item={item}
           index={key}
-          key={key.toString(2)}
           handleCheckbox={handleCheckbox}
           handleRemove={handleRemove}
         />

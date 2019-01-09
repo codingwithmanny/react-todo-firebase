@@ -4,12 +4,30 @@ import PropTypes from 'prop-types';
 const Todo = ({
   item,
   index,
-  key,
   handleCheckbox,
   handleRemove,
 }) => (
-  <div key={`list-${(key + 1)}`} className="todo list-group-item">
-    <input onChange={() => handleCheckbox(index)} checked={item.done} className="form-control" type="checkbox" />
+  <div
+    style={{
+      cursor: 'pointer',
+    }}
+    role="button"
+    tabIndex={index}
+    onKeyPress={(e) => { if (e.key === 'Enter') { handleCheckbox(index); } }}
+    onClick={() => handleCheckbox(index)}
+    className="todo list-group-item"
+  >
+    <input
+      style={{
+        width: 'auto',
+        outline: 'none',
+        border: 'none !important',
+      }}
+      readOnly
+      checked={item.done}
+      className="form-control"
+      type="checkbox"
+    />
     <span style={{
       top: 0,
       bottom: 0,
@@ -24,7 +42,8 @@ const Todo = ({
       {item.text}
     </span>
     <button
-      onClick={() => handleRemove(index)}
+      onClick={e => handleRemove(e, index)}
+      onKeyPress={(e) => { if (e.key === 'Enter') { handleRemove(e, index); } }}
       type="button"
       className="btn btn-sm btn-danger"
       style={{
@@ -44,16 +63,15 @@ const Todo = ({
 );
 
 Todo.defaultProps = {
-  item: [],
+  item: {},
 };
 
 Todo.propTypes = {
-  item: PropTypes.objectOf({
-    text: PropTypes.strig,
+  item: PropTypes.shape({
+    text: PropTypes.string,
     done: PropTypes.bool,
   }),
   index: PropTypes.number.isRequired,
-  key: PropTypes.string.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleRemove: PropTypes.func.isRequired,
 };
