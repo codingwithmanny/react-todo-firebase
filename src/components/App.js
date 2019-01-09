@@ -1,12 +1,11 @@
 import React from 'react';
+import Header from './Header';
+import Todos from './Todos';
 
 class App extends React.Component {
   state = {
     todo: '',
-    todos: [{
-      text: 'A new todo name',
-      done: true,
-    }],
+    todos: [],
   };
 
   handleChange = (event) => {
@@ -60,56 +59,16 @@ class App extends React.Component {
       <div className="App">
         <div className="container-fluid">
           <div className="row">
-            <header style={{ margin: '20px 0 40px 0' }} className="App-header col col-12">
-              <h1>React Todo App</h1>
-            </header>
+            <Header title="React Todo App" />
 
-            <main className="col col-12">
-              <form onSubmit={this.handleSubmit} style={{ marginBottom: '20px' }}>
-                <input name="todo" onChange={this.handleChange} value={todo} className="form-control" type="text" placeholder="Enter todo here... [Press Enter]" autoComplete="off" />
-              </form>
-
-              <ul className="todos list-groups" style={{ padding: 0 }}>
-                {(todos.length === 0)
-                  ? (<li className="todo list-group-item">No todos yet</li>)
-                  : (todos.map((item, key) => (
-                    <li key={`list-${(key + 1)}`} className="todo list-group-item">
-                      <input onChange={() => this.handleCheckbox(key)} checked={item.done} className="form-control" type="checkbox" />
-                      <span style={{
-                        top: 0,
-                        bottom: 0,
-                        left: '3rem',
-                        right: '5rem',
-                        lineHeight: '62px',
-                        display: 'block',
-                        position: 'absolute',
-                        textDecoration: (item.done) ? 'line-through' : 'none',
-                      }}
-                      >
-                        {item.text}
-                      </span>
-                      <button
-                        onClick={() => this.handleRemove(key)}
-                        type="button"
-                        className="btn btn-sm btn-danger"
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          bottom: 0,
-                          right: '1.25rem',
-                          margin: 'auto 0',
-                          height: '25px',
-                          paddingTop: 0,
-                          paddingBottom: 0,
-                        }}
-                      >
-                      &times;
-                      </button>
-                    </li>
-                  )))
-                }
-              </ul>
-            </main>
+            <Todos
+              todo={todo}
+              todos={todos}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+              handleCheckbox={this.handleCheckbox}
+              handleRemove={this.handleRemove}
+            />
           </div>
         </div>
       </div>
