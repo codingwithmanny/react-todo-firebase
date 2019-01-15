@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import base from '../base';
 
 export const TodosContext = React.createContext();
 
@@ -9,50 +10,71 @@ class TodoProvider extends React.Component {
   };
 
   state = {
-    todo: '', // eslint-disable-line
-    todos: [],
+    loading: true,
+    todo: '',
+    todos: {},
   };
+
+  componentDidMount() {
+    const user = 'test';
+    this.ref = base.syncState(`${user}/todos`, {
+      context: this,
+      state: 'todos',
+      then: () => {
+        this.setState({
+          loading: false,
+        });
+      },
+    });
+  }
 
   render() {
     const { children } = this.props;
+    const { loading, todo, todos } = this.state;
     return (
       <TodosContext.Provider
         value={{
+          loading,
+          todo,
+          todos,
           state: this.state,
           handleChange: event => this.setState({
             todo: event.currentTarget.value, // eslint-disable-line
           }),
           handleSubmit: (event) => {
-            const { todos } = this.state;
+            const { todos: todoslist } = this.state;
+
+            const index = ((Object.keys(todoslist).length) > -1)
+              ? (Object.keys(todoslist).length)
+              : 0;
+
+            todoslist[index] = {
+              text: event.currentTarget.todo.value,
+              done: false,
+            };
 
             this.setState({
-              todo: '', // eslint-disable-line
-              todos: [
-                {
-                  text: event.currentTarget.todo.value,
-                  done: false,
-                },
-                ...todos,
-              ],
+              todo: '',
+              todos: todoslist,
             });
 
             event.preventDefault();
           },
           handleCheckbox: (index) => {
-            const { todos } = this.state;
-            todos[index].done = !todos[index].done;
+            const { todos: todoslist } = this.state;
+            todoslist[index].done = !todoslist[index].done;
 
             this.setState({
-              todos,
+              todos: todoslist,
             });
           },
           handleRemove: (event, index) => {
             event.stopPropagation();
-            const { todos } = this.state;
+            const { todos: todoslist } = this.state;
             this.setState({
               todos: [
-                ...todos.slice(0, index),
-                ...todos.slice(index + 1),
+                ...todoslist.slice(0, index),
+                ...todoslist.slice(index + 1),
               ],
             });
           },
